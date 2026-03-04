@@ -297,14 +297,20 @@ export default class GameScene extends Phaser.Scene {
 
     // Fire
     const ptr = this.input.activePointer;
-    if (ptr.isDown || this._mobileAttackDown) {
-      let targetX = ptr.worldX;
-      let targetY = ptr.worldY;
-      if (this._mobileAttackDown) {
-        // Fire in facing direction
+    // On touch devices, only fire via ATK button (joystick touch must not trigger shooting)
+    const isTouchDevice = this.sys.game.device.input.touch;
+    const shouldFire = isTouchDevice ? this._mobileAttackDown : ptr.isDown;
+    if (shouldFire) {
+      let targetX, targetY;
+      if (isTouchDevice) {
+        // Fire in facing direction on mobile
         const dir = this.player.facingLeft ? -1 : 1;
         targetX = this.player.x + dir * 500;
         targetY = this.player.y;
+      } else {
+        // Aim toward mouse cursor on desktop
+        targetX = ptr.worldX;
+        targetY = ptr.worldY;
       }
       const fireData = this.player.fire(time, targetX, targetY);
       if (fireData) {
@@ -421,7 +427,9 @@ export default class GameScene extends Phaser.Scene {
         if (!enemy.container || !enemy.container.active) continue;
 
         const projBounds = proj.getBounds();
-        const enemyBounds = enemy.container.getBounds();
+        // Use physics body bounds (always accurate) instead of container.getBounds()
+        const eb = enemy.container.body;
+        const enemyBounds = new Phaser.Geom.Rectangle(eb.x, eb.y, eb.width, eb.height);
 
         if (Phaser.Geom.Rectangle.Overlaps(projBounds, enemyBounds)) {
           if (proj.getData('aoe')) {
@@ -531,50 +539,55 @@ export default class GameScene extends Phaser.Scene {
       score: this.score,
       damageMultiplier: this.player.damageMultiplier,
       speedBoosted: this.player.speed > 200,
+      weaponRange: this.player.weaponConfig.range,
     });
   }
 
   _createMobileControls(width, height) {
     this._mobileAttackDown = false;
 
-    // Joystick base
+    // Joystick base (bottom-left)
     const jbX = 80, jbY = height - 80;
-    const joystickBase = this.add.circle(jbX, jbY, 50, 0x000000, 0.3)
+    const joystickBase = this.add.circle(jbX, jbY, 55, 0x000000, 0.35)
       .setScrollFactor(0).setDepth(100);
-    const joystickThumb = this.add.circle(jbX, jbY, 25, 0xffffff, 0.5)
+    const joystickThumb = this.add.circle(jbX, jbY, 28, 0xffffff, 0.55)
       .setScrollFactor(0).setDepth(101);
 
-    // Attack button
-    const atkBtn = this.add.circle(width - 70, height - 80, 42, 0xe74c3c, 0.7)
+    // ATK button (bottom-right, large)
+    const atkX = width - 75, atkY = height - 80;
+    const atkBtn = this.add.circle(atkX, atkY, 52, 0xe74c3c, 0.8)
       .setScrollFactor(0).setDepth(100).setInteractive();
-    this.add.text(width - 70, height - 80, 'ATK', {
-      fontSize: '14px', color: '#ffffff', fontStyle: 'bold'
+    this.add.text(atkX, atkY, 'ATK', {
+      fontSize: '16px', color: '#ffffff', fontStyle: 'bold'
     }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
 
     atkBtn.on('pointerdown', () => { this._mobileAttackDown = true; });
     atkBtn.on('pointerup', () => { this._mobileAttackDown = false; });
     atkBtn.on('pointerout', () => { this._mobileAttackDown = false; });
 
-    // Weapon buttons
-    const prevBtn = this.add.text(width - 150, height - 90, '<<', {
-      fontSize: '20px', color: '#f1c40f', backgroundColor: '#00000066', padding: { x: 8, y: 5 }
-    }).setScrollFactor(0).setDepth(100).setInteractive();
-    const nextBtn = this.add.text(width - 110, height - 90, '>>', {
-      fontSize: '20px', color: '#f1c40f', backgroundColor: '#00000066', padding: { x: 8, y: 5 }
-    }).setScrollFactor(0).setDepth(100).setInteractive();
-
-    prevBtn.on('pointerdown', () => { this.player.switchWeapon(-1); this._notifyHUD(); });
-    nextBtn.on('pointerdown', () => { this.player.switchWeapon(1); this._notifyHUD(); });
-
-    // Jump button
-    const jumpBtn = this.add.circle(width - 130, height - 80, 30, 0x2980b9, 0.7)
+    // Jump button (left of ATK, clearly separated)
+    const jmpX = width - 195, jmpY = height - 80;
+    const jumpBtn = this.add.circle(jmpX, jmpY, 42, 0x2980b9, 0.8)
       .setScrollFactor(0).setDepth(100).setInteractive();
-    this.add.text(width - 130, height - 80, 'JMP', {
-      fontSize: '11px', color: '#ffffff'
+    this.add.text(jmpX, jmpY, 'JMP', {
+      fontSize: '14px', color: '#ffffff', fontStyle: 'bold'
     }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
     jumpBtn.on('pointerdown', () => {
       if (this.player.body.blocked.down) this.player.body.setVelocityY(this.player.jumpVelocity);
     });
+
+    // Weapon switch buttons (row above action buttons)
+    const prevBtn = this.add.text(width - 220, height - 175, '<<', {
+      fontSize: '22px', color: '#f1c40f', backgroundColor: '#00000088',
+      padding: { x: 14, y: 10 },
+    }).setScrollFactor(0).setDepth(100).setInteractive();
+    const nextBtn = this.add.text(width - 130, height - 175, '>>', {
+      fontSize: '22px', color: '#f1c40f', backgroundColor: '#00000088',
+      padding: { x: 14, y: 10 },
+    }).setScrollFactor(0).setDepth(100).setInteractive();
+
+    prevBtn.on('pointerdown', () => { this.player.switchWeapon(-1); this._notifyHUD(); });
+    nextBtn.on('pointerdown', () => { this.player.switchWeapon(1); this._notifyHUD(); });
 
     // Joystick drag
     this._joystickActive = false;

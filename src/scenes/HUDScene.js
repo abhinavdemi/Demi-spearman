@@ -122,7 +122,7 @@ export default class HUDScene extends Phaser.Scene {
     });
   }
 
-  _updateHUD({ health, maxHealth, currentWeapon, unlockedWeapons, shieldHits, score, damageMultiplier, speedBoosted }) {
+  _updateHUD({ health, maxHealth, currentWeapon, unlockedWeapons, shieldHits, score, damageMultiplier, speedBoosted, weaponRange }) {
     // Health bar
     const pct = Math.max(0, health / maxHealth);
     this.healthFill.width = 200 * pct;
@@ -134,7 +134,8 @@ export default class HUDScene extends Phaser.Scene {
     // Weapon
     const idx = unlockedWeapons.indexOf(currentWeapon);
     this.weaponText.setText(currentWeapon.toUpperCase().replace('GUN', ' GUN'));
-    this.weaponSubText.setText(`[${idx + 1}/${unlockedWeapons.length}] Q/E to switch`);
+    const rangeStr = weaponRange === 80 ? 'MELEE' : `${weaponRange}px`;
+    this.weaponSubText.setText(`[${idx + 1}/${unlockedWeapons.length}] Q/E to switch  |  Range: ${rangeStr}`);
 
     // Active boosts
     let weaponColor = '#f1c40f';
