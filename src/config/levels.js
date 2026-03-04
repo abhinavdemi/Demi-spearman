@@ -2,6 +2,7 @@ export const LEVELS = [
   {
     id: 1,
     background: 0x1a1a2e,
+    spawnFromRight: true,
     waves: [
       { enemies: [{ type: 'basicSoldier', count: 3 }] },
       { enemies: [{ type: 'basicSoldier', count: 5 }] },
@@ -14,6 +15,7 @@ export const LEVELS = [
   {
     id: 2,
     background: 0x16213e,
+    spawnFromRight: true,
     waves: [
       { enemies: [{ type: 'basicSoldier', count: 4 }, { type: 'rangedEnemy', count: 2 }] },
       { enemies: [{ type: 'rangedEnemy', count: 4 }] },

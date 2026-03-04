@@ -39,7 +39,10 @@ export class LevelManager {
     this.waveInProgress = true;
     this.activeEnemies = [];
 
-    const spawnSides = [80, this.scene.scale.width - 80];
+    const rightOnly = !!level.spawnFromRight;
+    const spawnSides = rightOnly
+      ? [this.scene.scale.width - 80]
+      : [this.scene.scale.width - 80, 80];
     let enemyIdx = 0;
 
     wave.enemies.forEach(group => {
@@ -47,7 +50,7 @@ export class LevelManager {
         const EnemyClass = ENEMY_CLASS_MAP[group.type];
         if (!EnemyClass) continue;
 
-        const spawnX = spawnSides[enemyIdx % 2];
+        const spawnX = spawnSides[enemyIdx % spawnSides.length];
         // Spawn at platform height — use ground level
         const spawnY = this.scene.groundY - 30;
 
