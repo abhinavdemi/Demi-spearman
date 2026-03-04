@@ -1,0 +1,74 @@
+export const LEVELS = [
+  {
+    id: 1,
+    background: 0x1a1a2e,
+    waves: [
+      { enemies: [{ type: 'basicSoldier', count: 3 }] },
+      { enemies: [{ type: 'basicSoldier', count: 5 }] },
+      { enemies: [{ type: 'basicSoldier', count: 6 }] },
+      { enemies: [{ type: 'boss', count: 1, variant: 'level1' }] },
+    ],
+    unlocks: ['pistol'],
+    powerUpChance: 0.3,
+  },
+  {
+    id: 2,
+    background: 0x16213e,
+    waves: [
+      { enemies: [{ type: 'basicSoldier', count: 4 }, { type: 'rangedEnemy', count: 2 }] },
+      { enemies: [{ type: 'rangedEnemy', count: 4 }] },
+      { enemies: [{ type: 'basicSoldier', count: 5 }, { type: 'rangedEnemy', count: 3 }] },
+      { enemies: [{ type: 'boss', count: 1, variant: 'level2' }] },
+    ],
+    unlocks: ['sword', 'bazooka'],
+    powerUpChance: 0.35,
+  },
+  {
+    id: 3,
+    background: 0x0f3460,
+    waves: [
+      { enemies: [{ type: 'basicSoldier', count: 4 }, { type: 'shieldEnemy', count: 2 }] },
+      { enemies: [{ type: 'rangedEnemy', count: 3 }, { type: 'shieldEnemy', count: 3 }] },
+      { enemies: [{ type: 'basicSoldier', count: 5 }, { type: 'rangedEnemy', count: 2 }, { type: 'shieldEnemy', count: 2 }] },
+      { enemies: [{ type: 'boss', count: 1, variant: 'level3' }] },
+    ],
+    unlocks: ['uzi'],
+    powerUpChance: 0.35,
+  },
+  {
+    id: 4,
+    background: 0x1b1b2f,
+    waves: [
+      { enemies: [{ type: 'basicSoldier', count: 5 }, { type: 'rangedEnemy', count: 3 }, { type: 'shieldEnemy', count: 2 }] },
+      { enemies: [{ type: 'rangedEnemy', count: 5 }, { type: 'shieldEnemy', count: 3 }] },
+      { enemies: [{ type: 'basicSoldier', count: 6 }, { type: 'shieldEnemy', count: 4 }] },
+      { enemies: [{ type: 'boss', count: 1, variant: 'level4' }] },
+    ],
+    unlocks: ['machinegun'],
+    powerUpChance: 0.4,
+  },
+  {
+    id: 5,
+    background: 0x2c003e,
+    waves: [
+      { enemies: [{ type: 'basicSoldier', count: 6 }, { type: 'rangedEnemy', count: 4 }, { type: 'shieldEnemy', count: 3 }] },
+      { enemies: [{ type: 'rangedEnemy', count: 6 }, { type: 'shieldEnemy', count: 4 }] },
+      { enemies: [{ type: 'basicSoldier', count: 8 }, { type: 'shieldEnemy', count: 4 }] },
+      { enemies: [{ type: 'boss', count: 1, variant: 'level5' }] },
+    ],
+    unlocks: ['sniper', 'bow'],
+    powerUpChance: 0.4,
+  },
+  {
+    id: 6,
+    background: 0x1a0a00,
+    waves: [
+      { enemies: [{ type: 'basicSoldier', count: 8 }, { type: 'rangedEnemy', count: 5 }, { type: 'shieldEnemy', count: 4 }] },
+      { enemies: [{ type: 'rangedEnemy', count: 7 }, { type: 'shieldEnemy', count: 5 }] },
+      { enemies: [{ type: 'basicSoldier', count: 10 }, { type: 'shieldEnemy', count: 5 }] },
+      { enemies: [{ type: 'boss', count: 1, variant: 'level6' }] },
+    ],
+    unlocks: [],
+    powerUpChance: 0.45,
+  },
+];
